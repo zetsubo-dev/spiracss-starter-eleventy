@@ -5,15 +5,13 @@ export default {
     assets: ['src/assets'],
     layouts: ['src/_includes/layouts'],
     partials: ['src/_includes/partials'],
-    blocks: ['src/_includes/blocks']
+    blocks: ['src/_includes/blocks'],
+    components: ['src/_includes/blocks']
   },
   stylelint: {
     base: {
       external: {
         prefixes: ['u-']
-      },
-      paths: {
-        components: ['src/_includes']
       }
     }
   },
