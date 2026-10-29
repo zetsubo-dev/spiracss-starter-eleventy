@@ -1,6 +1,6 @@
 @use "styles/partials/global" as *;
 
-// @rel/../site-header.scss
+// @rel/../SiteHeader.scss
 
 .site-logo {
   display: block;
@@ -16,7 +16,7 @@
 
   // --interaction -----------------------------------
   @at-root & {
-    > a {
+    > .link {
       &:hover {
         color: var(--color-primary);
       }

@@ -1,17 +1,12 @@
 @use "styles/partials/global" as *;
 
-// @rel/../site-header.scss
+// @rel/../SiteHeader.scss
 
 .site-nav {
   > .list {
     display: flex;
     gap: 1.5rem;
 
-    > .item {
-      > a {
-        color: var(--color-text);
-      }
-    }
   }
 
   // --shared ----------------------------------------
@@ -20,7 +15,8 @@
   @at-root & {
     > .list {
       > .item {
-        > a {
+        > .link {
+          color: var(--color-text);
           transition: color 0.2s $ease;
 
           &:hover {

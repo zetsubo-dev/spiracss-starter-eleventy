@@ -5,10 +5,10 @@
   </div>
   <div class="footer-links">
     <ul class="list">
-      <li class="item"><a href="/">Home</a></li>
-      <li class="item"><a href="/about/">About</a></li>
+      <li class="item"><a class="link" href="/">Home</a></li>
+      <li class="item"><a class="link" href="/about/">About</a></li>
       <li class="item">
-        <a href="https://spiracss.jp" target="_blank" rel="noreferrer">Docs</a>
+        <a class="link" href="https://spiracss.jp" target="_blank" rel="noreferrer">Docs</a>
       </li>
     </ul>
   </div>

@@ -1,92 +1,61 @@
-# Eleventy Simple (SpiraCSS Sample)
+# spiracss-starter-eleventy
 
-A minimal Eleventy (11ty) sample to try SpiraCSS with WebC and plain SCSS.
+A SpiraCSS 0.5.0 sample using native CSS `@scope`, not framework-generated scoping.
 
-## Requirements
+## Runtime and setup
 
-- Node.js 20+ (recommended)
+Use Node.js **24.22.2 (24 LTS)** and npm **11.19.1** (`.node-version` / `.nvmrc`). Versions are exact and dependencies are locked.
 
-## Setup
-
-```bash
-npm install
+```sh
+npm ci
+npm run verify:scss
+npm run lint:scss
+npm run build
+npm run audit:dependencies
 ```
 
-## Initial setup
+Run `npm run dev` to browse `/` and `/about/`. The home page is styled; About intentionally remains HTML-first for generation practice.
 
-The following settings are already configured in this sample:
+## Portable SCSS contract
 
-1. `spiracss.config.js` (aliasRoots / generator / selectorPolicy)
-2. `stylelint.config.js` with `@spiracss/stylelint-plugin` enabled
-3. `.eleventy.cjs` paths aligned with `spiracss.config.js`
+The 33 files under `src/components/`, `src/styles/`, and `src/assets/css/` are identical across all seven samples. Framework markup is not shared and does not own style isolation.
 
-### VS Code Extensions (Install Separately)
+```scss
+@use "styles/partials/global" as *;
+@use "sass:meta";
 
-If not installed, please install the following extensions:
-
-- **SpiraCSS HTML to SCSS**
-  - [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=spiracss.spiracss-html-to-scss)
-  - [Open VSX](https://open-vsx.org/extension/spiracss/spiracss-html-to-scss)
-- **SpiraCSS Comment Links**
-  - [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=spiracss.spiracss-comment-links)
-  - [Open VSX](https://open-vsx.org/extension/spiracss/spiracss-comment-links)
-
-## Dev server
-
-```bash
-npm run dev
+@scope (.hero-section) {
+  :scope {
+    @include meta.load-css("scss");
+    > .hero-title { /* parent-owned placement */ }
+  }
+}
 ```
 
-## Goals
+Only component root files use `@scope`. Meta-loaded child Blocks under `scss/` retain class selectors; do not scope them or move the root include outside `:scope`. Neither CSS Modules nor Vue/Astro-generated selector attributes are needed. This requires browsers that support CSS `@scope`. Global resets/tokens and page placement remain separate from component ownership.
 
-- The top page is already styled and shows data-mode variants/states
-- The About page is HTML-first so you can try the SCSS generation flow
-- Layout + includes live under `src/_includes/` (WebC)
+Sass compiles external entries; WebC templates use unchanged literal classes.
 
-## Structure
+Sass resolves the same bare imports from `src`; framework-specific aliases remain only for markup integration. `generator.scssRootStyle` is explicitly `scope-explicit`. `npm run verify:scss` checks the shared source manifest, root/child policy, and absence of framework-scoped source. Changes to shared SCSS must be synchronized across samples and the manifest updated deliberately.
 
-- `src/index.webc`
-  - Styled page
-  - Includes `data-variant` / `data-state` / `aria-selected` examples
-- `src/about.webc`
-  - HTML-first workflow content
-- `src/_includes/layouts/base.webc`
-  - Layout with header/footer
-- `src/_includes/partials/`
-  - Header/Footer includes
-- `src/_includes/blocks/`
-  - Hero/Card blocks
-- `src/assets/css/home.scss` / `src/assets/css/about.scss`
-  - Page entry SCSS (page layer + `@rel` wiring)
-- `src/assets/css/global.scss` / `src/assets/css/common.scss`
-  - Global styles shared by all pages
-- `spiracss.config.js`
-  - SpiraCSS config (shared by HTML CLI / Stylelint)
-- `spiracss-ai-agent-doc.md`
-  - AI operation guide (rules and decision criteria)
-  - If you use AI, load this document into your AI context first
+## HTML-first practice and AI
 
-## SCSS generation flow
+Select the `<main class="about-flow">...</main>` fragment on the About page and run **Generate SpiraCSS SCSS from Root** or the HTML CLI. Add the generated component with `@use` to `src/assets/css/about.scss`. Keep child files class-based. Read `spiracss-ai-agent-doc.md` first; the full reference is optional. Both are synchronized from the official site at v0.5.0.
 
-`src/about.webc` is HTML-first and the layout wraps it, so generating from the full file in Root mode may fail.
-Select `<main class="about-flow"> ... </main>` and generate from that selection.
-For manual work, use the VS Code extension. For AI usage, you can base your flow on the HTML CLI.
+## Dependency security
 
-### VS Code (manual)
+Install-time lifecycle scripts are disabled in `.npmrc`; do not disable that protection globally to fix a build. Builds are explicit `npm run build` operations. If a future native dependency needs an install step, inspect that exact package and approve a targeted rebuild.
 
-1. Open `src/about.webc` and select `<main class="about-flow"> ... </main>`
-2. Run `Generate SpiraCSS SCSS from Root` from the editor context menu or a shortcut
-3. Save the generated SCSS (e.g., `src/assets/css/about-flow.scss`)
-4. Update the parent comment to `// @assets/css/about.scss` if needed
-5. Wire it from `src/assets/css/about.scss` with a placement rule and `@rel` comment
-6. Cmd/Ctrl+Click `// @rel/...` in SCSS to jump to related files
-7. Apply your design styles on top of the generated structure
-8. If Stylelint reports errors, fix them (ask AI if needed)
+Use `npm ci` for the committed lockfile and run `npm run audit:dependencies` for development and production dependencies. Do not use `npm audit fix --force`, suppress advisories, or add speculative overrides. A clean audit is evidence about known advisories at check time, not a guarantee against unknown or supply-chain compromise.
 
-## What to check
+The Next.js samples use Next **16.4.3** / React **19.3.1**, including the October 2026 fixes. See [official Next.js security guidance](https://nextjs.org/blog/nextjs-security-update-october-14-2026). Recheck advisories before publishing. These changes do not publish npm packages or deploy the sample.
 
-- Top page (index)
-  - `data-variant` / `data-state` / `aria-selected` are separated in SCSS
-  - Page-layer wiring is visible via `@rel` comments
-- About page
-  - SCSS can be generated from HTML-first content
+See [SECURITY.md](SECURITY.md) for the verification date, exact remaining findings, and security overrides.
+
+## Visual parity verification
+
+The six runnable samples intentionally share the same Home/About content and rendered component placement. SCSS hashes and lint alone do not prove equal rendering.
+
+On 2026-10-29, full-page PNG captures matched byte-for-byte across all six production builds in Chromium at desktop 1366×900 DPR1 and mobile 390×844 DPR1 (mobile UA). Fonts were loaded and animations finished before capture. No image masks or pixel-difference tolerance were used.
+
+Repeat that comparison after changing markup, copy, style loading or SCSS. Check both routes at the same viewport, browser and stable animation state. This result does not establish parity in other browser engines or for every viewport.

@@ -9,22 +9,35 @@
     "dev:scss": "sass --watch --load-path=src --load-path=src/_includes src/assets/css:dist/assets/css",
     "build": "eleventy --config=./.eleventy.cjs && npm run build:scss",
     "build:scss": "sass --load-path=src --load-path=src/_includes src/assets/css:dist/assets/css",
-    "lint:scss": "stylelint \"src/**/*.scss\" --fix"
+    "lint:scss": "stylelint \"src/**/*.scss\"",
+    "lint:scss:fix": "npm run lint:scss -- --fix",
+    "verify:scss": "node scripts/verify-scss.mjs",
+    "audit:dependencies": "npm audit --audit-level=low"
   },
   "dependencies": {
-    "@11ty/eleventy": "^3.1.2",
-    "@11ty/eleventy-plugin-webc": "^0.11.2"
+    "@11ty/eleventy": "3.1.7",
+    "@11ty/eleventy-plugin-webc": "0.11.2"
   },
   "devDependencies": {
-    "@spiracss/html-cli": "^0.4.0",
-    "@spiracss/stylelint-plugin": "^0.4.0",
-    "npm-run-all": "^4.1.5",
-    "postcss": "^8.4.49",
-    "postcss-scss": "^4.0.9",
-    "sass": "^1.83.0",
-    "stylelint": "^17.0.0",
-    "stylelint-config-recess-order": "^5.1.1",
-    "stylelint-config-standard-scss": "^17.0.0",
-    "stylelint-scss": "^7.0.0"
+    "@spiracss/html-cli": "0.5.0",
+    "@spiracss/stylelint-plugin": "0.5.0",
+    "npm-run-all": "4.1.5",
+    "postcss": "8.5.32",
+    "postcss-scss": "4.0.9",
+    "sass": "1.107.0",
+    "stylelint": "17.16.0",
+    "stylelint-config-recess-order": "7.9.0",
+    "stylelint-config-standard-scss": "17.0.0",
+    "stylelint-scss": "7.4.0"
+  },
+  "engines": {
+    "node": ">=24.22.2 <25",
+    "npm": ">=11.19.1 <12"
+  },
+  "packageManager": "npm@11.19.1",
+  "overrides": {
+    "@11ty/webc": {
+      "nanoid": "5.1.16"
+    }
   }
 }
